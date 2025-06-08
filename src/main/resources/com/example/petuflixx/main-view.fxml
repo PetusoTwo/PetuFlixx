@@ -9,7 +9,8 @@
 
 <StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.example.petuflixx.controllers.MainController"
-           stylesheets="@styles.css">
+           stylesheets="@styles.css"
+           fx:id="rootPane">
 
     <VBox spacing="0">
         <!-- Barra de navegación superior con efecto de cristal -->
