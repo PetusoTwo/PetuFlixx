@@ -3,6 +3,7 @@ package com.example.petuflixx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -23,8 +24,27 @@ public class RegisterController {
     private PasswordField confirmPasswordField;
     
     @FXML
+    private Button backButton;
+    
+    @FXML
+    private Button registerButton;
+
+    @FXML
+    public void initialize() {
+        // Asegurarse de que los botones estén habilitados
+        if (registerButton != null) {
+            registerButton.setDisable(false);
+            registerButton.setDefaultButton(true);
+        }
+        if (backButton != null) {
+            backButton.setDisable(false);
+        }
+        // Hacer que el campo de nombre sea el foco inicial
+        nameField.requestFocus();
+    }
+    
+    @FXML
     protected void onRegisterButtonClick() {
-        // Aquí iría la lógica de registro
         String name = nameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
@@ -41,10 +61,11 @@ public class RegisterController {
     
     @FXML
     protected void onBackButtonClick() throws IOException {
-        // Volver a la pantalla principal
+        System.out.println("Volviendo a la pantalla principal desde registro");
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1800, 950);
-        Stage stage = (Stage) nameField.getScene().getWindow();
+        Stage stage = (Stage) backButton.getScene().getWindow();
+        stage.setTitle("PetuFlix | Sistema de Peliculas");
         stage.setScene(scene);
     }
 } 
