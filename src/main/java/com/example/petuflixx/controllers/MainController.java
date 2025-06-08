@@ -2,7 +2,9 @@ package com.example.petuflixx.controllers;
 
 import com.example.petuflixx.api.TMDBService;
 import com.example.petuflixx.api.TMDBService.Movie;
+import com.example.petuflixx.database.RatingDAO;
 import com.example.petuflixx.utils.NavigationUtils;
+import com.example.petuflixx.database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,13 +21,18 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class MainController {
     private static final Logger logger = Logger.getLogger(MainController.class.getName());
     private final TMDBService tmdbService = new TMDBService();
+    private final RatingDAO ratingDAO = new RatingDAO();
     private String currentUser;
+    private int currentUserId;
 
     @FXML private TextField searchField;
     @FXML private FlowPane popularMoviesContainer;
@@ -66,9 +73,11 @@ public class MainController {
         userMenu.getItems().add(logoutItem);
     }
 
-    public void setCurrentUser(String userName) {
+    public void setCurrentUser(String userName, int userId) {
         this.currentUser = userName;
+        this.currentUserId = userId;
         userNameLabel.setText(userName);
+        loadRecommendedMovies(); // Recargar recomendaciones cuando se establece el usuario
     }
 
     private void onLogoutClick() {
@@ -89,8 +98,21 @@ public class MainController {
 
     private void loadRecommendedMovies() {
         try {
-            List<Movie> movies = tmdbService.getPopularMovies(2);
-            displayMovies(movies, recommendedMoviesContainer);
+            if (currentUserId > 0) {
+                List<Integer> recommendedMovieIds = ratingDAO.getRecommendedMovieIds(currentUserId);
+                if (!recommendedMovieIds.isEmpty()) {
+                    List<Movie> recommendedMovies = tmdbService.getMoviesByIds(recommendedMovieIds);
+                    displayMovies(recommendedMovies, recommendedMoviesContainer);
+                } else {
+                    // Si no hay recomendaciones, mostrar películas populares
+                    List<Movie> popularMovies = tmdbService.getPopularMovies(2);
+                    displayMovies(popularMovies, recommendedMoviesContainer);
+                }
+            } else {
+                // Si no hay usuario logueado, mostrar películas populares
+                List<Movie> popularMovies = tmdbService.getPopularMovies(2);
+                displayMovies(popularMovies, recommendedMoviesContainer);
+            }
         } catch (Exception e) {
             logger.severe("Error al cargar películas recomendadas: " + e.getMessage());
             showError("Error al cargar películas recomendadas");
@@ -131,6 +153,9 @@ public class MainController {
         for (Movie movie : movies) {
             VBox movieCard = createMovieCard(movie);
             container.getChildren().add(movieCard);
+            
+            // Guardar los géneros de la película
+            saveMovieGenres(movie.getId(), movie.getGenreIds());
         }
     }
 
@@ -164,6 +189,7 @@ public class MainController {
 
             MovieDetailsController controller = loader.getController();
             controller.setMovie(movie);
+            controller.setCurrentUserId(currentUserId);
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -175,7 +201,10 @@ public class MainController {
             rootPane.setEffect(blur);
 
             // Quitar el efecto cuando se cierra el modal
-            stage.setOnHidden(e -> rootPane.setEffect(null));
+            stage.setOnHidden(e -> {
+                rootPane.setEffect(null);
+                loadRecommendedMovies(); // Recargar recomendaciones después de calificar
+            });
 
             stage.showAndWait();
         } catch (IOException e) {
@@ -190,5 +219,21 @@ public class MainController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void saveMovieGenres(int movieId, List<Integer> genreIds) {
+        String sql = "INSERT OR IGNORE INTO movie_genres (movie_id, genre_id) VALUES (?, ?)";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            for (Integer genreId : genreIds) {
+                stmt.setInt(1, movieId);
+                stmt.setInt(2, genreId);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logger.severe("Error al guardar géneros de la película: " + e.getMessage());
+        }
     }
 } 

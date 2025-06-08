@@ -23,6 +23,7 @@
 
         <!-- Formulario de registro -->
         <VBox spacing="15" maxWidth="400" alignment="CENTER">
+            <TextField fx:id="usernameField" promptText="Nombre de usuario" styleClass="login-field"/>
             <TextField fx:id="nameField" promptText="Nombre completo" styleClass="login-field"/>
             <TextField fx:id="emailField" promptText="Correo electrónico" styleClass="login-field"/>
             <PasswordField fx:id="passwordField" promptText="Contraseña" styleClass="login-field"/>

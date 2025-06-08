@@ -3,10 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
 
 <StackPane xmlns="http://javafx.com/javafx/8" 
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.example.petuflixx.HelloController"
+           fx:controller="com.example.petuflixx.controllers.LoginController"
            style="-fx-background-color: linear-gradient(to bottom, #4b0000 0%, #1a0000 50%, #000000 100%);">
 
     <!-- Contenido principal -->
@@ -15,6 +16,12 @@
         <VBox alignment="CENTER" spacing="8">
             <Label text="PETUFLIX" style="-fx-text-fill: #e50914; -fx-font-size: 60px; -fx-font-weight: bold;"/>
             <Label text="Tu plataforma de streaming favorita" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+        </VBox>
+
+        <!-- Formulario de login -->
+        <VBox alignment="CENTER" spacing="15" maxWidth="400">
+            <TextField fx:id="usernameField" promptText="Nombre de usuario" styleClass="login-field"/>
+            <PasswordField fx:id="passwordField" promptText="Contraseña" styleClass="login-field"/>
         </VBox>
 
         <!-- Botones -->
@@ -30,5 +37,4 @@
                     style="-fx-background-color:rgb(228, 54, 63); -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 36 12 36;"/>
         </HBox>
     </VBox>
-
 </StackPane>

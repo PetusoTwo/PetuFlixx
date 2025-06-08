@@ -1,6 +1,8 @@
 package com.example.petuflixx.controllers;
 
 import com.example.petuflixx.api.TMDBService.Movie;
+import com.example.petuflixx.database.RatingDAO;
+import com.example.petuflixx.models.Rating;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +17,8 @@ import java.util.logging.Logger;
 public class MovieDetailsController {
     private static final Logger logger = Logger.getLogger(MovieDetailsController.class.getName());
     private Movie movie;
+    private int currentUserId;
+    private RatingDAO ratingDAO;
 
     @FXML private ImageView posterImage;
     @FXML private Label titleLabel;
@@ -27,7 +31,12 @@ public class MovieDetailsController {
 
     public void setMovie(Movie movie) {
         this.movie = movie;
+        this.ratingDAO = new RatingDAO();
         updateUI();
+    }
+
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
     }
 
     private void updateUI() {
@@ -66,7 +75,7 @@ public class MovieDetailsController {
             });
 
             star.setOnMouseClicked(e -> {
-                logger.info("Calificación guardada: " + rating + " estrellas para " + movie.getTitle());
+                saveRating(rating);
                 ((Stage) closeButton.getScene().getWindow()).close();
             });
 
@@ -74,6 +83,16 @@ public class MovieDetailsController {
         }
 
         userRatingBox.getChildren().add(starsBox);
+    }
+
+    private void saveRating(int rating) {
+        try {
+            Rating userRating = new Rating(currentUserId, movie.getId(), rating);
+            ratingDAO.saveRating(userRating);
+            logger.info("Calificación guardada: " + rating + " estrellas para " + movie.getTitle());
+        } catch (Exception e) {
+            logger.severe("Error al guardar la calificación: " + e.getMessage());
+        }
     }
 
     @FXML

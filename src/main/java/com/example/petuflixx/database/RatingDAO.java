@@ -1,74 +1,40 @@
 package com.example.petuflixx.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.example.petuflixx.models.Rating;
+
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class RatingDAO {
-    
-    public void saveRating(int userId, int movieId, int rating) {
-        String sql = "INSERT INTO calificaciones (usuario_id, pelicula_id, calificacion) " +
-                    "VALUES (?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE calificacion = ?";
-                    
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, userId);
-            pstmt.setInt(2, movieId);
-            pstmt.setInt(3, rating);
-            pstmt.setInt(4, rating);
-            
-            pstmt.executeUpdate();
-            
-            // Actualizar géneros favoritos basado en la calificación
-            updateFavoriteGenres(userId, movieId, rating);
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al guardar la calificación: " + e.getMessage());
-        }
-    }
-    
-    public int getUserRating(int userId, int movieId) {
-        String sql = "SELECT calificacion FROM calificaciones WHERE usuario_id = ? AND pelicula_id = ?";
+    private static final Logger logger = Logger.getLogger(RatingDAO.class.getName());
+
+    public void saveRating(Rating rating) {
+        String sql = "INSERT INTO ratings (user_id, movie_id, rating) VALUES (?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE rating = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setInt(1, userId);
-            pstmt.setInt(2, movieId);
+            pstmt.setInt(1, rating.getUserId());
+            pstmt.setInt(2, rating.getMovieId());
+            pstmt.setInt(3, rating.getRating());
+            pstmt.setInt(4, rating.getRating());
             
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("calificacion");
-            }
+            int affectedRows = pstmt.executeUpdate();
+            logger.info("Calificación guardada. Filas afectadas: " + affectedRows);
             
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.severe("Error al guardar la calificación: " + e.getMessage());
+            throw new RuntimeException("Error al guardar la calificación", e);
         }
-        
-        return 0; // Retorna 0 si no hay calificación
     }
-    
-    private void updateFavoriteGenres(int userId, int movieId, int rating) {
-        // Obtener los géneros de la película desde la API de TMDB
-        // y actualizar la tabla de géneros_favoritos
-        // Este método se implementará cuando agreguemos la lógica de recomendaciones
-    }
-    
-    public List<Integer> getRecommendedMovies(int userId) {
-        String sql = "SELECT DISTINCT c2.pelicula_id " +
-                    "FROM calificaciones c1 " +
-                    "JOIN calificaciones c2 ON c1.pelicula_id != c2.pelicula_id " +
-                    "WHERE c1.usuario_id = ? AND c1.calificacion >= 4 " +
-                    "ORDER BY c2.calificacion DESC " +
-                    "LIMIT 20";
-                    
-        List<Integer> recommendedMovies = new ArrayList<>();
+
+    public List<Rating> getUserRatings(int userId) {
+        String sql = "SELECT * FROM ratings WHERE user_id = ? ORDER BY created_at DESC";
+        List<Rating> ratings = new ArrayList<>();
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -77,13 +43,69 @@ public class RatingDAO {
             ResultSet rs = pstmt.executeQuery();
             
             while (rs.next()) {
-                recommendedMovies.add(rs.getInt("pelicula_id"));
+                Rating rating = new Rating(
+                    rs.getInt("id"),
+                    rs.getInt("user_id"),
+                    rs.getInt("movie_id"),
+                    rs.getInt("rating"),
+                    rs.getTimestamp("created_at").toLocalDateTime()
+                );
+                ratings.add(rating);
             }
             
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.severe("Error al obtener las calificaciones del usuario: " + e.getMessage());
+            throw new RuntimeException("Error al obtener las calificaciones del usuario", e);
         }
         
-        return recommendedMovies;
+        return ratings;
+    }
+
+    public List<Integer> getRecommendedMovieIds(int userId) throws SQLException {
+        String sql = """
+            WITH UserGenres AS (
+                SELECT DISTINCT m.genre_id
+                FROM ratings r
+                JOIN movie_genres m ON r.movie_id = m.movie_id
+                WHERE r.user_id = ? AND r.rating >= 4
+            ),
+            SimilarUsers AS (
+                SELECT r2.user_id, COUNT(DISTINCT m.genre_id) as common_genres
+                FROM ratings r2
+                JOIN movie_genres m ON r2.movie_id = m.movie_id
+                JOIN UserGenres ug ON m.genre_id = ug.genre_id
+                WHERE r2.user_id != ?
+                GROUP BY r2.user_id
+                HAVING common_genres > 0
+            ),
+            RecommendedMovies AS (
+                SELECT r.movie_id, AVG(r.rating) as avg_rating
+                FROM ratings r
+                JOIN SimilarUsers su ON r.user_id = su.user_id
+                WHERE r.movie_id NOT IN (
+                    SELECT movie_id FROM ratings WHERE user_id = ?
+                )
+                GROUP BY r.movie_id
+                HAVING avg_rating >= 3.5
+                ORDER BY avg_rating DESC
+                LIMIT 20
+            )
+            SELECT movie_id FROM RecommendedMovies
+            """;
+
+        List<Integer> movieIds = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userId);
+            stmt.setInt(2, userId);
+            stmt.setInt(3, userId);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                movieIds.add(rs.getInt("movie_id"));
+            }
+        }
+        return movieIds;
     }
 } 
