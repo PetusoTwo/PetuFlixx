@@ -16,11 +16,12 @@ public class HelloApplication extends Application {
         try {
             logger.info("Iniciando aplicación PetuFlix");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/hello-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1800, 950);
+            Scene scene = new Scene(fxmlLoader.load());
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             
             stage.setTitle("PetuFlix | Sistema de Películas");
             stage.setScene(scene);
+            stage.setMaximized(true);
             stage.show();
             
             logger.info("Aplicación iniciada correctamente");

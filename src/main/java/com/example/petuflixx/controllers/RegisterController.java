@@ -2,16 +2,13 @@ package com.example.petuflixx.controllers;
 
 import com.example.petuflixx.database.UserDAO;
 import com.example.petuflixx.models.User;
+import com.example.petuflixx.utils.NavigationUtils;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,7 +59,8 @@ public class RegisterController {
         if (registroExitoso) {
             logger.info("Usuario registrado exitosamente");
             showAlert(Alert.AlertType.INFORMATION, "Registro exitoso", "Usuario registrado correctamente");
-            navigateToLogin();
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            NavigationUtils.navigateTo("/com/example/petuflixx/login-view.fxml", currentStage);
         } else {
             logger.severe("Error al registrar usuario - registroExitoso es false");
             showAlert(Alert.AlertType.ERROR, "Error de registro", "No se pudo registrar el usuario");
@@ -101,21 +99,9 @@ public class RegisterController {
         alert.showAndWait();
     }
 
-    private void navigateToLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/login-view.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error al navegar a la pantalla de login", e);
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la pantalla de login");
-        }
-    }
-
     @FXML
     private void onBackButtonClick() {
-        navigateToLogin();
+        Stage currentStage = (Stage) backButton.getScene().getWindow();
+        NavigationUtils.navigateTo("/com/example/petuflixx/login-view.fxml", currentStage);
     }
 } 

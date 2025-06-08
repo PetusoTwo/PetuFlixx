@@ -4,7 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.effect.*?>
 
 <StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
@@ -38,15 +39,12 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button styleClass="profile-button">
-                    <graphic>
-                        <ImageView fitWidth="32" fitHeight="32" style="-fx-background-radius: 4;">
-                            <image>
-                                <Image url="@icons/profile-icon.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
+                <HBox spacing="10" alignment="CENTER">
+                    <Label fx:id="userNameLabel" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+                    <MenuButton fx:id="userMenu" text="▼" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;">
+                        <!-- Los items del menú se agregan dinámicamente en el controlador -->
+                    </MenuButton>
+                </HBox>
             </HBox>
         </HBox>
 

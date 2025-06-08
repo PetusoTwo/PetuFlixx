@@ -2,6 +2,7 @@ package com.example.petuflixx.controllers;
 
 import com.example.petuflixx.database.UserDAO;
 import com.example.petuflixx.models.User;
+import com.example.petuflixx.utils.NavigationUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -66,7 +67,29 @@ public class LoginController {
         }
 
         logger.info("Login exitoso para el usuario: " + email);
-        navigateToMain();
+        navigateToMain(user.getName());
+    }
+
+    private void navigateToMain(String userName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/main-view.fxml"));
+            Parent root = loader.load();
+            
+            // Obtener el controlador y establecer el nombre de usuario
+            MainController mainController = loader.getController();
+            mainController.setCurrentUser(userName);
+            
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setMaximized(true);
+            stage.show();
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error al navegar a la pantalla principal", e);
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la pantalla principal");
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {
@@ -77,30 +100,9 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    private void navigateToMain() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/main-view.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error al navegar a la pantalla principal", e);
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la pantalla principal");
-        }
-    }
-
     @FXML
     private void onRegisterButtonClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/register-view.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) registerButton.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error al navegar a la pantalla de registro", e);
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la pantalla de registro");
-        }
+        Stage currentStage = (Stage) registerButton.getScene().getWindow();
+        NavigationUtils.navigateTo("/com/example/petuflixx/register-view.fxml", currentStage);
     }
 } 
