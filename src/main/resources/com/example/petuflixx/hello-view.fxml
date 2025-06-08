@@ -25,6 +25,7 @@
                     style="-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 36 12 36;"/>
 
             <Button text="REGISTRARSE"
+                    onAction="#onRegisterButtonClick"
                     style="-fx-background-color:rgb(228, 54, 63); -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 36 12 36;"/>
         </HBox>
     </VBox>

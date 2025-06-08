@@ -44,4 +44,17 @@ public class HelloController {
         stage.setScene(scene);
     }
 
+    @FXML
+    protected void onRegisterButtonClick() throws IOException {
+        System.out.println("Se hizo clic en REGISTRARSE");
+        
+        // Cargar la vista de registro
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("register-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1800, 950);
+        
+        // Obtener el Stage actual
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        stage.setTitle("PetuFlix | Registro");
+        stage.setScene(scene);
+    }
 }
