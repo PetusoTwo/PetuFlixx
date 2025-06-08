@@ -15,7 +15,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) {
         try {
             logger.info("Iniciando aplicación PetuFlix");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/login-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/petuflixx/hello-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1800, 950);
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             
