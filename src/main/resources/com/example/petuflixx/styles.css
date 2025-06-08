@@ -1,22 +1,19 @@
 /* Estilos generales */
 .root {
-    -fx-background-color: #0a0a0a;
+    -fx-background-color: #141414;
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 /* Barra de navegación */
 .nav-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: white;
     -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 8 16;
     -fx-cursor: hand;
 }
 
 .nav-button:hover {
     -fx-text-fill: #e50914;
-    -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.3), 10, 0, 0, 0);
 }
 
 /* Barra de búsqueda */
@@ -24,11 +21,9 @@
     -fx-background-color: rgba(255,255,255,0.1);
     -fx-text-fill: white;
     -fx-prompt-text-fill: rgba(255,255,255,0.5);
-    -fx-font-size: 14px;
-    -fx-padding: 8 15;
     -fx-background-radius: 20;
-    -fx-border-radius: 20;
-    -fx-border-color: transparent;
+    -fx-padding: 8 15;
+    -fx-min-width: 300px;
 }
 
 .search-field:focused {
@@ -39,7 +34,6 @@
 /* Botones de iconos */
 .icon-button {
     -fx-background-color: transparent;
-    -fx-padding: 8;
     -fx-cursor: hand;
 }
 
@@ -50,7 +44,6 @@
 /* Botón de perfil */
 .profile-button {
     -fx-background-color: transparent;
-    -fx-padding: 4;
     -fx-cursor: hand;
 }
 
@@ -60,17 +53,16 @@
 
 /* Tarjetas de películas */
 .movie-card {
-    -fx-background-color: #1a1a1a;
+    -fx-background-color: #1f1f1f;
     -fx-background-radius: 8;
     -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 0);
 }
 
 .movie-card:hover {
-    -fx-background-color: #242424;
-    -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.2), 15, 0, 0, 0);
-    -fx-translate-y: -5;
+    -fx-background-color: #2a2a2a;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);
 }
 
 .movie-poster {
@@ -81,11 +73,17 @@
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-padding: 8 0 4 0;
+    -fx-wrap-text: true;
+}
+
+.movie-rating {
+    -fx-text-fill: #46d369;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
 
 .movie-info {
-    -fx-text-fill: #b3b3b3;
+    -fx-text-fill: rgba(255,255,255,0.7);
     -fx-font-size: 14px;
 }
 
@@ -107,39 +105,39 @@
 
 /* Botón de reproducción */
 .play-button {
-    -fx-background-color: #e50914;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-padding: 12 24;
-    -fx-background-radius: 4;
+    -fx-padding: 10 25;
+    -fx-background-radius: 5;
     -fx-cursor: hand;
 }
 
 .play-button:hover {
-    -fx-background-color: #f40612;
-    -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.4), 10, 0, 0, 0);
+    -fx-background-color: rgba(255,255,255,0.8);
 }
 
 /* Botón secundario */
 .secondary-button {
     -fx-background-color: rgba(255,255,255,0.2);
     -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-padding: 12 24;
-    -fx-background-radius: 4;
+    -fx-padding: 10 25;
+    -fx-background-radius: 5;
     -fx-cursor: hand;
 }
 
 .secondary-button:hover {
     -fx-background-color: rgba(255,255,255,0.3);
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.2), 10, 0, 0, 0);
 }
 
 /* Efecto hover para tarjetas */
 .hover-info {
-    -fx-background-radius: 8;
+    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-padding: 10;
+    -fx-opacity: 0;
     -fx-transition: opacity 0.3s;
 }
 
@@ -149,16 +147,15 @@
 
 /* Botón de reproducción mini */
 .play-mini-button {
-    -fx-background-color: #e50914;
-    -fx-text-fill: white;
-    -fx-font-size: 24px;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-padding: 8;
+    -fx-padding: 5 15;
     -fx-background-radius: 50%;
     -fx-cursor: hand;
 }
 
 .play-mini-button:hover {
-    -fx-background-color: #f40612;
-    -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.4), 10, 0, 0, 0);
+    -fx-background-color: rgba(255,255,255,0.8);
 } 
