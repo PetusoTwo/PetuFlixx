@@ -38,9 +38,16 @@ public class LoginController {
     }
     
     @FXML
-    protected void onLoginButtonClick() {
+    protected void onLoginButtonClick() throws IOException {
         System.out.println("Intento de login con: " + emailField.getText());
         // Aquí iría la lógica de autenticación
+        
+        // Por ahora, redirigimos directamente a la vista principal
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1800, 950);
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        stage.setTitle("PetuFlix | Principal");
+        stage.setScene(scene);
     }
     
     @FXML
