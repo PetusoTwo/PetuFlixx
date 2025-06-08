@@ -8,9 +8,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,6 +38,7 @@ public class MainController {
     @FXML private Label featuredMovieDescription;
     @FXML private Label userNameLabel;
     @FXML private MenuButton userMenu;
+    @FXML private StackPane rootPane;
 
     @FXML
     public void initialize() {
@@ -166,6 +169,14 @@ public class MainController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
+
+            // Aplicar efecto de desenfoque al fondo
+            GaussianBlur blur = new GaussianBlur(10);
+            rootPane.setEffect(blur);
+
+            // Quitar el efecto cuando se cierra el modal
+            stage.setOnHidden(e -> rootPane.setEffect(null));
+
             stage.showAndWait();
         } catch (IOException e) {
             logger.severe("Error al mostrar detalles de la película: " + e.getMessage());
