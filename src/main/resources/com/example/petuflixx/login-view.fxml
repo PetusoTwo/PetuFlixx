@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.petuflixx.LoginController"
+           stylesheets="@../../../styles.css">
+
+    <!-- Fondo con gradiente -->
+    <Pane styleClass="background-pane"/>
+
+    <!-- Contenido principal -->
+    <VBox alignment="CENTER" spacing="30" styleClass="main-content">
+        <!-- Logo y título -->
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="PETUFLIX" styleClass="main-logo"/>
+            <Label text="Iniciar Sesión" styleClass="subtitle"/>
+        </VBox>
+
+        <!-- Formulario de login -->
+        <VBox spacing="15" maxWidth="400" alignment="CENTER">
+            <TextField fx:id="emailField" promptText="Email o nombre de usuario" styleClass="login-field"/>
+            <PasswordField fx:id="passwordField" promptText="Contraseña" styleClass="login-field"/>
+            
+            <HBox alignment="CENTER_RIGHT">
+                <Label text="¿Olvidaste tu contraseña?" styleClass="help-text"/>
+            </HBox>
+            
+            <Button text="INICIAR SESIÓN" styleClass="main-action-button" onAction="#onLoginButtonClick" maxWidth="Infinity"/>
+        </VBox>
+        
+        <!-- Botón para volver -->
+        <HBox alignment="CENTER" spacing="15">
+            <Button text="VOLVER" styleClass="secondary-button" onAction="#onBackButtonClick"/>
+        </HBox>
+    </VBox>
+
+    <!-- Footer -->
+    <HBox alignment="BOTTOM_RIGHT" styleClass="footer-box">
+        <Label text="¿Necesitas ayuda?" styleClass="help-text"/>
+    </HBox>
+</StackPane>

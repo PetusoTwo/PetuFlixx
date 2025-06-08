@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx/8" 
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.petuflixx.HelloController"
+           style="-fx-background-color: linear-gradient(to bottom, #4b0000 0%, #1a0000 50%, #000000 100%);">
+
+    <!-- Contenido principal -->
+    <VBox alignment="CENTER" spacing="30">
+        <!-- Logo y título -->
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="PETUFLIX" style="-fx-text-fill: #e50914; -fx-font-size: 60px; -fx-font-weight: bold;"/>
+            <Label text="Tu plataforma de streaming favorita" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+        </VBox>
+
+        <!-- Botones -->
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="loginButton" 
+                    text="INICIAR SESIÓN" 
+                    onAction="#onLoginButtonClick"
+                    style="-fx-background-color: #e50914; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 36 12 36;"/>
+
+            <Button text="REGISTRARSE"
+                    style="-fx-background-color:rgb(228, 54, 63); -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 36 12 36;"/>
+        </HBox>
+    </VBox>
+
+</StackPane>
