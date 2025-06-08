@@ -11,35 +11,44 @@ import java.util.logging.Logger;
 
 public class UserDAO {
     private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
-    private final Connection connection;
 
-    public UserDAO() {
-        this.connection = DatabaseConnection.getConnection();
-    }
+    public User createUser(String username, String email, String password, String name) throws SQLException {
+        // Primero verificar si el usuario o email ya existen
+        if (getUser(username) != null) {
+            throw new SQLException("El nombre de usuario ya está en uso");
+        }
+        if (getUserByEmail(email) != null) {
+            throw new SQLException("El email ya está registrado");
+        }
 
-    public boolean registerUser(User user) throws SQLException {
         String sql = "INSERT INTO users (username, email, password, name) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPassword());
-            stmt.setString(4, user.getName());
+            stmt.setString(1, username);
+            stmt.setString(2, email);
+            stmt.setString(3, password);
+            stmt.setString(4, name);
             
+            logger.info("Intentando crear usuario: " + username);
             int affectedRows = stmt.executeUpdate();
+            
             if (affectedRows == 0) {
-                return false;
+                throw new SQLException("Error al crear usuario, ninguna fila afectada.");
             }
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    user.setId(generatedKeys.getInt(1));
-                    return true;
+                    int id = generatedKeys.getInt(1);
+                    logger.info("Usuario creado exitosamente con ID: " + id);
+                    return new User(id, username, email, password, name);
                 } else {
-                    return false;
+                    throw new SQLException("Error al crear usuario, no se obtuvo el ID.");
                 }
             }
+        } catch (SQLException e) {
+            logger.severe("Error al crear usuario: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -82,32 +91,6 @@ public class UserDAO {
                 );
             }
             return null;
-        }
-    }
-
-    public User createUser(String username, String email, String password, String name) throws SQLException {
-        String sql = "INSERT INTO users (username, email, password, name) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
-            stmt.setString(1, username);
-            stmt.setString(2, email);
-            stmt.setString(3, password);
-            stmt.setString(4, name);
-            
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Error al crear usuario, ninguna fila afectada.");
-            }
-
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int id = generatedKeys.getInt(1);
-                    return new User(id, username, email, password, name);
-                } else {
-                    throw new SQLException("Error al crear usuario, no se obtuvo el ID.");
-                }
-            }
         }
     }
 } 

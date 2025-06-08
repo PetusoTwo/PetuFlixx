@@ -1,0 +1,165 @@
+/* Estilos generales */
+.root {
+    -fx-background-color: #141414;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Barra superior */
+.header {
+    -fx-background-color: #1f1f1f;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
+}
+
+.app-title {
+    -fx-fill: #e50914;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Barra de búsqueda */
+.search-field {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #808080;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15;
+    -fx-font-size: 14px;
+}
+
+.search-field:focused {
+    -fx-background-color: #404040;
+    -fx-effect: dropshadow(gaussian, #e50914, 5, 0, 0, 0);
+}
+
+/* Botón de cerrar sesión */
+.logout-button {
+    -fx-background-color: #e50914;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #ff0f1a;
+    -fx-effect: dropshadow(gaussian, #e50914, 5, 0, 0, 0);
+}
+
+.logout-button:pressed {
+    -fx-background-color: #b30710;
+}
+
+/* Títulos de sección */
+.section-title {
+    -fx-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 20;
+}
+
+/* Contenedor de películas */
+.movie-container {
+    -fx-padding: 20;
+    -fx-background-color: transparent;
+}
+
+/* ScrollPane personalizado */
+.movie-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.movie-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.movie-scroll .scroll-bar:vertical {
+    -fx-background-color: #1f1f1f;
+    -fx-background-radius: 0;
+}
+
+.movie-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #e50914;
+    -fx-background-radius: 0;
+}
+
+.movie-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #ff0f1a;
+}
+
+/* Tarjeta de película */
+.movie-card {
+    -fx-background-color: #1f1f1f;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-min-width: 200;
+    -fx-max-width: 200;
+}
+
+.movie-card:hover {
+    -fx-effect: dropshadow(gaussian, #e50914, 15, 0, 0, 0);
+    -fx-translate-y: -5;
+}
+
+.movie-poster {
+    -fx-background-radius: 10 10 0 0;
+}
+
+.movie-info {
+    -fx-padding: 10;
+}
+
+.movie-title {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.movie-year {
+    -fx-text-fill: #808080;
+    -fx-font-size: 12px;
+}
+
+.movie-rating {
+    -fx-text-fill: #e50914;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Barra de estado */
+.status-bar {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #808080;
+    -fx-font-size: 12px;
+}
+
+/* Estilos para los botones de calificación */
+.rating-button {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+}
+
+.rating-button:hover {
+    -fx-background-color: #404040;
+}
+
+.rating-button.selected {
+    -fx-background-color: #e50914;
+}
+
+.rating-button.selected:hover {
+    -fx-background-color: #ff0f1a;
+} 

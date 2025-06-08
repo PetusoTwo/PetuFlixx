@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.ScrollPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.petuflixx.controllers.MainController"
+            stylesheets="@../styles/main.css">
+    
+    <!-- Barra superior -->
+    <top>
+        <HBox styleClass="header" alignment="CENTER_LEFT" spacing="20">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            
+            <!-- Logo y título -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
+                    <Image url="@../images/logo.png"/>
+                </ImageView>
+                <Text styleClass="app-title">PetuFlixx</Text>
+            </HBox>
+            
+            <!-- Barra de búsqueda -->
+            <TextField fx:id="searchField" 
+                      promptText="Buscar películas..."
+                      styleClass="search-field"
+                      HBox.hgrow="ALWAYS"/>
+            
+            <!-- Botón de cerrar sesión -->
+            <Button fx:id="logoutButton" 
+                    text="Cerrar Sesión"
+                    onAction="#onLogoutClick"
+                    styleClass="logout-button"/>
+        </HBox>
+    </top>
+    
+    <!-- Contenido principal -->
+    <center>
+        <VBox spacing="20">
+            <!-- Sección de películas recomendadas -->
+            <VBox spacing="10">
+                <Text styleClass="section-title">Películas Recomendadas</Text>
+                <ScrollPane fitToWidth="true" styleClass="movie-scroll">
+                    <FlowPane fx:id="recommendedMoviesContainer" 
+                             hgap="15" 
+                             vgap="15"
+                             styleClass="movie-container"/>
+                </ScrollPane>
+            </VBox>
+            
+            <!-- Sección de películas populares -->
+            <VBox spacing="10">
+                <Text styleClass="section-title">Películas Populares</Text>
+                <ScrollPane fitToWidth="true" styleClass="movie-scroll">
+                    <FlowPane fx:id="popularMoviesContainer" 
+                             hgap="15" 
+                             vgap="15"
+                             styleClass="movie-container"/>
+                </ScrollPane>
+            </VBox>
+            
+            <!-- Sección de películas mejor valoradas -->
+            <VBox spacing="10">
+                <Text styleClass="section-title">Mejor Valoradas</Text>
+                <ScrollPane fitToWidth="true" styleClass="movie-scroll">
+                    <FlowPane fx:id="topRatedMoviesContainer" 
+                             hgap="15" 
+                             vgap="15"
+                             styleClass="movie-container"/>
+                </ScrollPane>
+            </VBox>
+        </VBox>
+    </center>
+    
+    <!-- Barra de estado -->
+    <bottom>
+        <HBox styleClass="status-bar" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Bienvenido a PetuFlixx"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane> 

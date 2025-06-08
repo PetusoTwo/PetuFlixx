@@ -30,14 +30,25 @@ public class RegisterController {
 
     @FXML
     private void onRegisterButtonClick() {
-        String username = usernameField.getText();
-        String email = emailField.getText();
+        String username = usernameField.getText().trim();
+        String email = emailField.getText().trim();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
-        String name = nameField.getText();
+        String name = nameField.getText().trim();
 
+        // Validaciones
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty()) {
             showError("Por favor, complete todos los campos");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showError("Por favor, ingrese un email válido");
+            return;
+        }
+
+        if (password.length() < 6) {
+            showError("La contraseña debe tener al menos 6 caracteres");
             return;
         }
 
@@ -47,23 +58,24 @@ public class RegisterController {
         }
 
         try {
-            // Verificar si el usuario ya existe
-            if (userDAO.getUser(username) != null) {
-                showError("El nombre de usuario ya está en uso");
-                return;
-            }
-
             // Crear nuevo usuario
             User newUser = userDAO.createUser(username, email, password, name);
             logger.info("Usuario registrado exitosamente: " + username);
+            
+            // Mostrar mensaje de éxito
+            showSuccess("Usuario registrado exitosamente");
             
             // Navegar a la pantalla de login
             Stage currentStage = (Stage) backButton.getScene().getWindow();
             NavigationUtils.navigateTo("/com/example/petuflixx/hello-view.fxml", currentStage);
         } catch (SQLException e) {
             logger.severe("Error al registrar usuario: " + e.getMessage());
-            showError("Error al registrar usuario");
+            showError(e.getMessage());
         }
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 
     @FXML
@@ -74,6 +86,14 @@ public class RegisterController {
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Éxito");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

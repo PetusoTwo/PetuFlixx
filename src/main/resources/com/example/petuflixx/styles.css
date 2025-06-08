@@ -4,11 +4,13 @@
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* Barra de navegación */
+/* Botones de navegación */
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
     -fx-cursor: hand;
 }
 
@@ -23,84 +25,24 @@
     -fx-prompt-text-fill: rgba(255,255,255,0.5);
     -fx-background-radius: 20;
     -fx-padding: 8 15;
+    -fx-font-size: 14px;
     -fx-min-width: 300px;
 }
 
 .search-field:focused {
     -fx-background-color: rgba(255,255,255,0.15);
-    -fx-border-color: #e50914;
 }
 
-/* Botones de iconos */
+/* Botón de icono */
 .icon-button {
     -fx-background-color: transparent;
+    -fx-padding: 8;
     -fx-cursor: hand;
 }
 
 .icon-button:hover {
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 10, 0, 0, 0);
-}
-
-/* Botón de perfil */
-.profile-button {
-    -fx-background-color: transparent;
-    -fx-cursor: hand;
-}
-
-.profile-button:hover {
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 10, 0, 0, 0);
-}
-
-/* Tarjetas de películas */
-.movie-card {
-    -fx-background-color: #1f1f1f;
-    -fx-background-radius: 8;
-    -fx-padding: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
-    -fx-cursor: hand;
-}
-
-.movie-card:hover {
-    -fx-background-color: #2a2a2a;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0, 0, 5);
-}
-
-.movie-poster {
-    -fx-background-radius: 8;
-}
-
-.movie-title {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-wrap-text: true;
-}
-
-.movie-rating {
-    -fx-text-fill: #46d369;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-}
-
-.movie-info {
-    -fx-text-fill: rgba(255,255,255,0.7);
-    -fx-font-size: 14px;
-}
-
-/* Botones de categorías */
-.category-button {
     -fx-background-color: rgba(255,255,255,0.1);
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 15;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-}
-
-.category-button:hover {
-    -fx-background-color: #e50914;
-    -fx-effect: dropshadow(gaussian, rgba(229,9,20,0.3), 10, 0, 0, 0);
+    -fx-background-radius: 50%;
 }
 
 /* Botón de reproducción */
@@ -109,7 +51,7 @@
     -fx-text-fill: black;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-padding: 10 25;
+    -fx-padding: 12 25;
     -fx-background-radius: 5;
     -fx-cursor: hand;
 }
@@ -124,7 +66,7 @@
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-padding: 10 25;
+    -fx-padding: 12 25;
     -fx-background-radius: 5;
     -fx-cursor: hand;
 }
@@ -133,29 +75,112 @@
     -fx-background-color: rgba(255,255,255,0.3);
 }
 
-/* Efecto hover para tarjetas */
-.hover-info {
-    -fx-background-color: rgba(0,0,0,0.7);
+/* Tarjeta de película */
+.movie-card {
+    -fx-background-color: #1f1f1f;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
+    -fx-cursor: hand;
     -fx-padding: 10;
-    -fx-opacity: 0;
-    -fx-transition: opacity 0.3s;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-min-width: 200;
+    -fx-max-width: 200;
 }
 
-.movie-card:hover .hover-info {
-    -fx-opacity: 1;
+.movie-card:hover {
+    -fx-effect: dropshadow(gaussian, #e50914, 15, 0, 0, 0);
+    -fx-translate-y: -5;
 }
 
-/* Botón de reproducción mini */
-.play-mini-button {
-    -fx-background-color: white;
-    -fx-text-fill: black;
-    -fx-font-size: 20px;
+.movie-poster {
+    -fx-background-radius: 10 10 0 0;
+}
+
+.movie-info {
+    -fx-padding: 10;
+}
+
+.movie-title {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 5 15;
-    -fx-background-radius: 50%;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.movie-year {
+    -fx-text-fill: #808080;
+    -fx-font-size: 12px;
+}
+
+.movie-rating {
+    -fx-text-fill: #46d369;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* ScrollPane personalizado */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 5;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(255,255,255,0.3);
+}
+
+/* Menú de usuario */
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5 10;
     -fx-cursor: hand;
 }
 
-.play-mini-button:hover {
-    -fx-background-color: rgba(255,255,255,0.8);
+.menu-button:hover {
+    -fx-text-fill: #e50914;
+}
+
+.menu-button .arrow-button {
+    -fx-padding: 0;
+}
+
+.menu-button .arrow {
+    -fx-background-color: white;
+}
+
+.menu-item {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+}
+
+.menu-item:hover {
+    -fx-background-color: #2f2f2f;
+}
+
+.menu-item .label {
+    -fx-text-fill: white;
+}
+
+/* Efectos de hover para imágenes */
+.image-view:hover {
+    -fx-effect: dropshadow(gaussian, #e50914, 15, 0, 0, 0);
+    -fx-translate-y: -5;
 } 
