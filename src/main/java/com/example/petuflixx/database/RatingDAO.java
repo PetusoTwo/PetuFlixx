@@ -63,73 +63,90 @@ public class RatingDAO {
         return ratings;
     }
 
-    public List<Integer> getRecommendedMovieIds(int userId) throws SQLException {
+    public List<Integer> getRecommendedMovieIds(int userId) {
+        List<Integer> recommendedMovies = new ArrayList<>();
         String sql = """
             WITH UserRatings AS (
-                -- Obtener las calificaciones del usuario
                 SELECT movie_id, rating
                 FROM ratings
                 WHERE user_id = ?
             ),
             UserGenres AS (
-                -- Obtener los géneros de las películas que el usuario ha calificado positivamente
                 SELECT DISTINCT mg.genre_id
                 FROM movie_genres mg
                 JOIN UserRatings ur ON mg.movie_id = ur.movie_id
                 WHERE ur.rating >= 4
             ),
             SimilarUsers AS (
-                -- Encontrar usuarios con gustos similares
-                SELECT r2.user_id, 
-                       COUNT(DISTINCT mg.genre_id) as common_genres,
-                       AVG(ABS(r1.rating - r2.rating)) as rating_diff
-                FROM ratings r1
-                JOIN ratings r2 ON r1.movie_id = r2.movie_id AND r2.user_id != ?
-                JOIN movie_genres mg ON r1.movie_id = mg.movie_id
-                JOIN UserGenres ug ON mg.genre_id = ug.genre_id
-                WHERE r1.user_id = ?
-                GROUP BY r2.user_id
-                HAVING common_genres > 0
-                ORDER BY common_genres DESC, rating_diff ASC
-                LIMIT 10
-            ),
-            RecommendedMovies AS (
-                -- Obtener películas recomendadas basadas en usuarios similares
-                SELECT r.movie_id,
-                       COUNT(DISTINCT r.user_id) as user_count,
-                       AVG(r.rating) as avg_rating,
-                       COUNT(DISTINCT mg.genre_id) as matching_genres
+                SELECT r.user_id, COUNT(*) as common_ratings
                 FROM ratings r
-                JOIN SimilarUsers su ON r.user_id = su.user_id
-                JOIN movie_genres mg ON r.movie_id = mg.movie_id
-                JOIN UserGenres ug ON mg.genre_id = ug.genre_id
-                WHERE r.movie_id NOT IN (
-                    SELECT movie_id FROM ratings WHERE user_id = ?
-                )
-                GROUP BY r.movie_id
-                HAVING avg_rating >= 3.5
-                ORDER BY matching_genres DESC, avg_rating DESC, user_count DESC
-                LIMIT 20
+                JOIN UserRatings ur ON r.movie_id = ur.movie_id
+                WHERE r.user_id != ?
+                AND ABS(r.rating - ur.rating) <= 1
+                GROUP BY r.user_id
+                HAVING common_ratings >= 2
+                ORDER BY common_ratings DESC
+                LIMIT 10
             )
-            SELECT movie_id FROM RecommendedMovies
+            SELECT DISTINCT m.id
+            FROM movies m
+            JOIN movie_genres mg ON m.id = mg.movie_id
+            LEFT JOIN UserGenres ug ON mg.genre_id = ug.genre_id
+            LEFT JOIN ratings r ON m.id = r.movie_id AND r.user_id = ?
+            WHERE r.id IS NULL
+            AND m.vote_average >= 3.5
+            GROUP BY m.id
+            ORDER BY 
+                COUNT(CASE WHEN ug.genre_id IS NOT NULL THEN 1 END) DESC,
+                m.vote_average DESC,
+                RAND()
+            LIMIT 10
             """;
 
-        List<Integer> movieIds = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, userId);
             stmt.setInt(2, userId);
             stmt.setInt(3, userId);
-            stmt.setInt(4, userId);
             
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                movieIds.add(rs.getInt("movie_id"));
+                recommendedMovies.add(rs.getInt("id"));
             }
             
-            logger.info("Se encontraron " + movieIds.size() + " películas recomendadas para el usuario " + userId);
+            // Si no hay suficientes recomendaciones, añadir películas populares
+            if (recommendedMovies.size() < 10) {
+                String fallbackSql = """
+                    SELECT m.id
+                    FROM movies m
+                    LEFT JOIN ratings r ON m.id = r.movie_id AND r.user_id = ?
+                    WHERE r.id IS NULL
+                    AND m.vote_average >= 3.5
+                    ORDER BY m.vote_count DESC, RAND()
+                    LIMIT ?
+                    """;
+                
+                try (PreparedStatement fallbackStmt = conn.prepareStatement(fallbackSql)) {
+                    fallbackStmt.setInt(1, userId);
+                    fallbackStmt.setInt(2, 10 - recommendedMovies.size());
+                    
+                    ResultSet fallbackRs = fallbackStmt.executeQuery();
+                    while (fallbackRs.next()) {
+                        int movieId = fallbackRs.getInt("id");
+                        if (!recommendedMovies.contains(movieId)) {
+                            recommendedMovies.add(movieId);
+                        }
+                    }
+                }
+            }
+            
+            logger.info("Se encontraron " + recommendedMovies.size() + " películas recomendadas para el usuario " + userId);
+            
+        } catch (SQLException e) {
+            logger.severe("Error al obtener películas recomendadas: " + e.getMessage());
         }
-        return movieIds;
+        
+        return recommendedMovies;
     }
 } 

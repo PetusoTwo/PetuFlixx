@@ -11,6 +11,34 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Crear la tabla de géneros
+CREATE TABLE IF NOT EXISTS genres (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Insertar géneros comunes
+INSERT IGNORE INTO genres (id, name) VALUES
+(28, 'Acción'),
+(12, 'Aventura'),
+(16, 'Animación'),
+(35, 'Comedia'),
+(80, 'Crimen'),
+(99, 'Documental'),
+(18, 'Drama'),
+(10751, 'Familia'),
+(14, 'Fantasía'),
+(36, 'Historia'),
+(27, 'Terror'),
+(10402, 'Música'),
+(9648, 'Misterio'),
+(10749, 'Romance'),
+(878, 'Ciencia ficción'),
+(10770, 'Película de TV'),
+(53, 'Suspense'),
+(10752, 'Bélica'),
+(37, 'Western');
+
 -- Crear la tabla de películas
 CREATE TABLE IF NOT EXISTS movies (
     id INTEGER PRIMARY KEY,
@@ -28,7 +56,8 @@ CREATE TABLE IF NOT EXISTS movie_genres (
     movie_id INTEGER NOT NULL,
     genre_id INTEGER NOT NULL,
     PRIMARY KEY (movie_id, genre_id),
-    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
 );
 
 -- Crear la tabla de calificaciones

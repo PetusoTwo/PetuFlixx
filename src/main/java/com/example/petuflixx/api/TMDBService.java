@@ -51,6 +51,15 @@ public class TMDBService {
                     movieJson.get("vote_count").getAsInt(),
                     movieJson.get("release_date").getAsString()
                 );
+                
+                // Asegurarnos de que los géneros se guarden
+                if (movieJson.has("genre_ids")) {
+                    JsonArray genresJson = movieJson.get("genre_ids").getAsJsonArray();
+                    for (JsonElement element : genresJson) {
+                        movie.getGenreIds().add(element.getAsInt());
+                    }
+                }
+                
                 movies.add(movie);
             }
             return movies;
