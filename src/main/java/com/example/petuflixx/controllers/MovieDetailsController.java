@@ -4,6 +4,7 @@ import com.example.petuflixx.api.TMDBService.Movie;
 import com.example.petuflixx.database.RatingDAO;
 import com.example.petuflixx.models.Rating;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -11,7 +12,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
+import javafx.application.Platform;
 
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class MovieDetailsController {
@@ -86,13 +91,39 @@ public class MovieDetailsController {
     }
 
     private void saveRating(int rating) {
-        try {
-            Rating userRating = new Rating(currentUserId, movie.getId(), rating);
-            ratingDAO.saveRating(userRating);
-            logger.info("Calificación guardada: " + rating + " estrellas para " + movie.getTitle());
-        } catch (Exception e) {
-            logger.severe("Error al guardar la calificación: " + e.getMessage());
+        if (currentUserId == 0) {
+            showError("Error", "Debes iniciar sesión para calificar películas");
+            return;
         }
+
+        try {
+            ratingDAO.saveRating(currentUserId, movie.getId(), rating);
+            logger.info("Calificación guardada: " + rating + " estrellas para la película " + movie.getTitle());
+            showSuccess("Éxito", "Calificación guardada correctamente");
+        } catch (SQLException e) {
+            logger.severe("Error al guardar la calificación: " + e.getMessage());
+            showError("Error", "No se pudo guardar la calificación");
+        }
+    }
+
+    private void showSuccess(String title, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
+    }
+
+    private void showError(String title, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
     }
 
     @FXML

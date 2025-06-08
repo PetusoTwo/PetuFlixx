@@ -154,8 +154,8 @@ public class MainController {
             VBox movieCard = createMovieCard(movie);
             container.getChildren().add(movieCard);
             
-            // Guardar los géneros de la película
-            saveMovieGenres(movie.getId(), movie.getGenreIds());
+            // Guardar la película en la base de datos
+            saveMovie(movie);
         }
     }
 
@@ -222,18 +222,61 @@ public class MainController {
     }
 
     private void saveMovieGenres(int movieId, List<Integer> genreIds) {
-        String sql = "INSERT OR IGNORE INTO movie_genres (movie_id, genre_id) VALUES (?, ?)";
+        // Primero eliminamos los géneros existentes para evitar duplicados
+        String deleteSql = "DELETE FROM movie_genres WHERE movie_id = ?";
+        String insertSql = "INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+            
+            // Eliminar géneros existentes
+            deleteStmt.setInt(1, movieId);
+            deleteStmt.executeUpdate();
+            
+            // Insertar nuevos géneros
+            for (Integer genreId : genreIds) {
+                insertStmt.setInt(1, movieId);
+                insertStmt.setInt(2, genreId);
+                insertStmt.executeUpdate();
+            }
+            
+            logger.info("Géneros actualizados para la película " + movieId + ": " + genreIds);
+        } catch (SQLException e) {
+            logger.severe("Error al guardar géneros de la película: " + e.getMessage());
+        }
+    }
+
+    private void saveMovie(Movie movie) {
+        String sql = "INSERT INTO movies (id, title, overview, poster_path, vote_average, vote_count, release_date) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "title = VALUES(title), " +
+                    "overview = VALUES(overview), " +
+                    "poster_path = VALUES(poster_path), " +
+                    "vote_average = VALUES(vote_average), " +
+                    "vote_count = VALUES(vote_count), " +
+                    "release_date = VALUES(release_date)";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            for (Integer genreId : genreIds) {
-                stmt.setInt(1, movieId);
-                stmt.setInt(2, genreId);
-                stmt.executeUpdate();
-            }
+            stmt.setInt(1, movie.getId());
+            stmt.setString(2, movie.getTitle());
+            stmt.setString(3, movie.getOverview());
+            stmt.setString(4, movie.getPosterPath());
+            stmt.setDouble(5, movie.getVoteAverage());
+            stmt.setInt(6, movie.getVoteCount());
+            stmt.setString(7, movie.getReleaseDate());
+            
+            stmt.executeUpdate();
+            
+            // Guardar los géneros de la película
+            saveMovieGenres(movie.getId(), movie.getGenreIds());
+            
+            logger.info("Película guardada en la base de datos: " + movie.getTitle());
         } catch (SQLException e) {
-            logger.severe("Error al guardar géneros de la película: " + e.getMessage());
+            logger.severe("Error al guardar la película en la base de datos: " + e.getMessage());
         }
     }
 } 
