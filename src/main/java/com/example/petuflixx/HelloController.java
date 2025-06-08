@@ -14,7 +14,7 @@ public class HelloController {
 
     @FXML
     private Button registerButton;
-
+    
     @FXML
     public void initialize() {
         // Asegurarse de que los botones estén habilitados

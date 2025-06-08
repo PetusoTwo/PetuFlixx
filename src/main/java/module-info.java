@@ -10,8 +10,12 @@ module com.example.petuflixx {
     opens com.example.petuflixx to javafx.fxml;
     opens com.example.petuflixx.controllers to javafx.fxml;
     opens com.example.petuflixx.api to javafx.fxml;
+    opens com.example.petuflixx.models to javafx.fxml;
+    opens com.example.petuflixx.database to javafx.fxml;
     
     exports com.example.petuflixx;
     exports com.example.petuflixx.controllers;
     exports com.example.petuflixx.api;
+    exports com.example.petuflixx.models;
+    exports com.example.petuflixx.database;
 }
